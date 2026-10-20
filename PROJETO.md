@@ -87,9 +87,12 @@ Todos os registros aparecem sobre o gráfico de glicemia, na linha do tempo.
 - **Backend/dados:** **Supabase**
   - **Banco:** PostgreSQL, com Row Level Security ativado em todas as tabelas.
   - **Auth:** Supabase Auth com provedor Google, restrito ao e-mail do dono.
-  - **Segredos:** credenciais do LibreLinkUp guardadas no Supabase Vault (criptografadas).
-- **Sincronização com o Libre:** Supabase **`pg_cron` + Edge Function**, rodando a cada ~5 minutos, busca as leituras no LibreLinkUp e grava no banco (com deduplicação por timestamp). Isso evita o limite de cron do Vercel Hobby.
-  - Complemento: ao abrir o painel, o app pode disparar uma sincronização sob demanda.
+  - **Segredos:** credenciais do LibreLinkUp e chave secreta do Supabase como variáveis *Sensitive* na Vercel. O segredo do agendamento (`sync_secret`) fica no Supabase Vault.
+- **Sincronização com o Libre (implementada em 2026-10-20):** o **`pg_cron` + `pg_net`** do Supabase chama a rota **`/api/sync`** do app na Vercel a cada 5 minutos. A rota busca as leituras das últimas ~12h no LibreLinkUp e grava no banco, sem duplicar.
+  - Essa opção substituiu a ideia original de usar Edge Function: todo o código fica no Next.js, e não é preciso usar a CLI do Supabase.
+  - A rota se autentica com `Authorization: Bearer <SYNC_SECRET>`. O token do LibreLinkUp fica em cache na tabela `libre_sessions`.
+  - Para conferir as execuções: `select * from net._http_response order by created desc limit 5;`
+  - Complemento futuro: ao abrir o painel, o app pode disparar uma sincronização sob demanda.
 - **Estilo/UI:** Tailwind CSS 4 + `next-themes` (tema claro/escuro/sistema).
 - **Gráficos:** a definir. Sugestão: Recharts ou visx.
 - **PDF:** a definir. Sugestão: `@react-pdf/renderer`.
@@ -98,8 +101,10 @@ Todos os registros aparecem sobre o gráfico de glicemia, na linha do tempo.
 ## 9. Andamento
 
 - [x] **2026-10-20 — Base do projeto:** Next.js 16 + Tailwind, login com Google via Supabase (com allowlist no banco e no app), proxy protegendo as rotas, tema claro/escuro/sistema, esquema inicial do banco com RLS e painel provisório.
-- [ ] Sincronização com o LibreLinkUp (Edge Function + `pg_cron`, credenciais no Vault)
-- [ ] Painel com a glicemia atual e o gráfico
+- [x] **2026-10-20 — Deploy:** produção em https://glicemia-mu.vercel.app (login testado no computador e no celular).
+- [x] **2026-10-20 — Sincronização com o LibreLinkUp:** `pg_cron` → `/api/sync` a cada 5 min, funcionando.
+- [x] Glicemia atual no painel (valor, seta de tendência, idade da leitura, aviso de falha de sincronização)
+- [ ] Gráfico das últimas horas no painel
 - [ ] Formulários de insulina, refeições, exercícios e notas
 - [ ] TIR, AGP e métricas
 - [ ] Relatório em PDF e exportação em CSV
