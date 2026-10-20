@@ -39,15 +39,63 @@ async function Dashboard() {
 
   if (!user) redirect("/login");
 
+  const [{ data: latest }, { data: settings }] = await Promise.all([
+    supabase
+      .from("glucose_readings")
+      .select("measured_at, value_mgdl, trend")
+      .order("measured_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("user_settings")
+      .select("target_low, target_high, last_sync_at, last_sync_status")
+      .maybeSingle(),
+  ]);
+
+  const targetLow = settings?.target_low ?? 70;
+  const targetHigh = settings?.target_high ?? 180;
+  const syncFailed =
+    settings?.last_sync_status && settings.last_sync_status !== "ok";
+
   return (
     <>
       <main className="mx-auto grid w-full max-w-6xl flex-1 gap-4 px-4 py-6 md:grid-cols-3">
         <section className="rounded-2xl border border-border bg-surface p-5 md:col-span-1">
           <h2 className="text-sm font-medium text-muted">Glicemia atual</h2>
-          <p className="mt-3 text-4xl font-semibold tabular-nums">— mg/dL</p>
-          <p className="mt-2 text-sm text-muted">
-            Aguardando a sincronização com o FreeStyle Libre.
-          </p>
+          {latest ? (
+            <>
+              <p
+                className={`mt-3 text-5xl font-semibold tabular-nums ${glucoseColor(latest.value_mgdl, targetLow, targetHigh)}`}
+              >
+                {latest.value_mgdl}
+                <span
+                  className="ml-2 text-4xl"
+                  aria-label={latest.trend ? TRENDS[latest.trend].label : undefined}
+                >
+                  {latest.trend ? TRENDS[latest.trend].arrow : ""}
+                </span>
+              </p>
+              <p className="mt-1 text-sm text-muted">mg/dL</p>
+              <p className="mt-3 text-sm text-muted">
+                {formatAge(latest.measured_at)}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mt-3 text-4xl font-semibold tabular-nums">— mg/dL</p>
+              <p className="mt-2 text-sm text-muted">
+                Aguardando a sincronização com o FreeStyle Libre.
+              </p>
+            </>
+          )}
+          {syncFailed && (
+            <p
+              role="alert"
+              className="mt-3 rounded-lg border border-glucose-low/40 bg-glucose-low/10 px-3 py-2 text-xs"
+            >
+              Falha na última sincronização: {settings.last_sync_status}
+            </p>
+          )}
         </section>
 
         <section className="rounded-2xl border border-border bg-surface p-5 md:col-span-2">
@@ -69,6 +117,32 @@ async function Dashboard() {
       </footer>
     </>
   );
+}
+
+const TRENDS: Record<number, { arrow: string; label: string }> = {
+  1: { arrow: "↓", label: "caindo rápido" },
+  2: { arrow: "↘", label: "caindo" },
+  3: { arrow: "→", label: "estável" },
+  4: { arrow: "↗", label: "subindo" },
+  5: { arrow: "↑", label: "subindo rápido" },
+};
+
+function glucoseColor(value: number, low: number, high: number) {
+  if (value < 54) return "text-glucose-very-low";
+  if (value < low) return "text-glucose-low";
+  if (value <= high) return "text-glucose-in-range";
+  if (value <= 250) return "text-glucose-high";
+  return "text-glucose-very-high";
+}
+
+function formatAge(measuredAt: string) {
+  const minutes = Math.floor(
+    (Date.now() - new Date(measuredAt).getTime()) / 60_000,
+  );
+  if (minutes < 1) return "agora mesmo";
+  if (minutes < 60) return `há ${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  return hours < 24 ? `há ${hours} h — dados desatualizados` : "há mais de um dia — dados desatualizados";
 }
 
 function DashboardSkeleton() {

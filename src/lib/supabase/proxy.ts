@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Rotas acessíveis sem login
-const PUBLIC_PATHS = ["/login", "/auth/callback"];
+// Rotas acessíveis sem login (/api/sync se autentica com SYNC_SECRET)
+const PUBLIC_PATHS = ["/login", "/auth/callback", "/api/sync"];
 
 // Renova a sessão do Supabase a cada requisição e redireciona para /login quem não está autenticado
 export async function updateSession(request: NextRequest) {
