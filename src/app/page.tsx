@@ -1,69 +1,85 @@
-import Image from "next/image";
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+// O cabeçalho é estático; o conteúdo depende da sessão e entra via <Suspense>
+export default function DashboardPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex flex-1 flex-col">
+      <header className="border-b border-border bg-surface">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <h1 className="text-lg font-semibold">Glicemia</h1>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <form action="/auth/signout" method="post">
+              <button
+                type="submit"
+                className="rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-background"
+              >
+                Sair
+              </button>
+            </form>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </header>
+
+      <Suspense fallback={<DashboardSkeleton />}>
+        <Dashboard />
+      </Suspense>
     </div>
+  );
+}
+
+async function Dashboard() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/login");
+
+  return (
+    <>
+      <main className="mx-auto grid w-full max-w-6xl flex-1 gap-4 px-4 py-6 md:grid-cols-3">
+        <section className="rounded-2xl border border-border bg-surface p-5 md:col-span-1">
+          <h2 className="text-sm font-medium text-muted">Glicemia atual</h2>
+          <p className="mt-3 text-4xl font-semibold tabular-nums">— mg/dL</p>
+          <p className="mt-2 text-sm text-muted">
+            Aguardando a sincronização com o FreeStyle Libre.
+          </p>
+        </section>
+
+        <section className="rounded-2xl border border-border bg-surface p-5 md:col-span-2">
+          <h2 className="text-sm font-medium text-muted">Últimas horas</h2>
+          <div className="mt-3 flex h-48 items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted">
+            O gráfico aparecerá aqui
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-border bg-surface p-5 md:col-span-3">
+          <h2 className="text-sm font-medium text-muted">Tempo no alvo</h2>
+          <p className="mt-3 text-sm text-muted">Sem dados ainda.</p>
+        </section>
+      </main>
+
+      <footer className="px-4 pb-6 text-center text-xs text-muted">
+        Logado como {user.email}. Este app não substitui o aplicativo oficial
+        do sensor nem orientação médica.
+      </footer>
+    </>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <main
+      aria-busy="true"
+      className="mx-auto grid w-full max-w-6xl flex-1 animate-pulse gap-4 px-4 py-6 md:grid-cols-3"
+    >
+      <div className="h-36 rounded-2xl border border-border bg-surface md:col-span-1" />
+      <div className="h-64 rounded-2xl border border-border bg-surface md:col-span-2" />
+      <div className="h-24 rounded-2xl border border-border bg-surface md:col-span-3" />
+    </main>
   );
 }
