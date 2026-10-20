@@ -1,8 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 
 // Cliente do Supabase para Server Components, Route Handlers e Server Actions
 export async function createClient() {
+  // O Supabase usa Date.now() ao validar a sessão; isso só pode rodar no
+  // momento do pedido, nunca durante a pré-renderização
+  await connection();
   const cookieStore = await cookies();
 
   return createServerClient(
