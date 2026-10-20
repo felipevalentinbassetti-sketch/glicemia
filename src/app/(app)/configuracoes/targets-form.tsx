@@ -51,7 +51,7 @@ export function TargetsForm({ low, high }: { low: number; high: number }) {
           {pending ? "Salvando…" : "Salvar"}
         </button>
         {state && !pending && (
-          <p role="status" className={`text-sm ${state.ok ? "text-glucose-in-range" : "text-glucose-very-low"}`}>
+          <p role="status" className={`text-sm ${state.ok ? "text-glucose-in-range-text" : "text-glucose-very-low-text"}`}>
             {state.ok ? "✓ " : "✕ "}
             {state.message}
           </p>

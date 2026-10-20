@@ -15,7 +15,7 @@ export function DeleteButton({ kind, id }: { kind: EventKind; id: number }) {
       <input type="hidden" name="id" value={id} />
       <button
         type="submit"
-        className="rounded-md px-2 py-1 text-xs text-muted hover:bg-background hover:text-glucose-very-low"
+        className="rounded-md px-2 py-1 text-xs text-muted hover:bg-background hover:text-glucose-very-low-text"
       >
         Excluir
       </button>

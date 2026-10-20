@@ -211,7 +211,7 @@ export function EntryForm({ kind, defaultMealType }: { kind: EventKind; defaultM
         {state && !pending && (
           <p
             role="status"
-            className={`text-sm ${state.ok ? "text-glucose-in-range" : "text-glucose-very-low"}`}
+            className={`text-sm ${state.ok ? "text-glucose-in-range-text" : "text-glucose-very-low-text"}`}
           >
             {state.ok ? "✓ " : "✕ "}
             {state.message}

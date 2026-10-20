@@ -14,11 +14,11 @@ export const RANGES: {
   textClass: string;
   bgClass: string;
 }[] = [
-  { key: "veryHigh", label: "Muito alta", short: "> 250", textClass: "text-glucose-very-high", bgClass: "bg-glucose-very-high" },
-  { key: "high", label: "Alta", short: "181–250", textClass: "text-glucose-high", bgClass: "bg-glucose-high" },
-  { key: "inRange", label: "No alvo", short: "70–180", textClass: "text-glucose-in-range", bgClass: "bg-glucose-in-range" },
-  { key: "low", label: "Baixa", short: "54–69", textClass: "text-glucose-low", bgClass: "bg-glucose-low" },
-  { key: "veryLow", label: "Muito baixa", short: "< 54", textClass: "text-glucose-very-low", bgClass: "bg-glucose-very-low" },
+  { key: "veryHigh", label: "Muito alta", short: "> 250", textClass: "text-glucose-very-high-text", bgClass: "bg-glucose-very-high" },
+  { key: "high", label: "Alta", short: "181–250", textClass: "text-glucose-high-text", bgClass: "bg-glucose-high" },
+  { key: "inRange", label: "No alvo", short: "70–180", textClass: "text-glucose-in-range-text", bgClass: "bg-glucose-in-range" },
+  { key: "low", label: "Baixa", short: "54–69", textClass: "text-glucose-low-text", bgClass: "bg-glucose-low" },
+  { key: "veryLow", label: "Muito baixa", short: "< 54", textClass: "text-glucose-very-low-text", bgClass: "bg-glucose-very-low" },
 ];
 
 export function rangeOf(value: number, low: number, high: number): RangeKey {

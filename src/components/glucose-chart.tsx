@@ -96,6 +96,14 @@ export function GlucoseChart({ points, events, targetLow, targetHigh }: Props) {
     (v, i, all) => v <= yMax && all.indexOf(v) === i,
   );
 
+  // Marcadores de eventos próximos (ex.: bolus junto da refeição) são afastados 20px
+  const markers = visibleEvents.reduce<{ event: TimelineEvent; ex: number; mx: number }[]>((list, event) => {
+    const ex = x(event.t);
+    const prev = list.at(-1)?.mx ?? -Infinity;
+    list.push({ event, ex, mx: Math.min(Math.max(ex, prev + 20), LEFT + plotWidth + RIGHT - 10) });
+    return list;
+  }, []);
+
   const active = activeIndex !== null ? visible[activeIndex] : null;
   const latest = visible.at(-1);
   const nearbyEvents = active
@@ -176,7 +184,7 @@ export function GlucoseChart({ points, events, targetLow, targetHigh }: Props) {
               setActiveIndex(nearestIndex(e.clientX, e.currentTarget.getBoundingClientRect()))
             }
             onPointerLeave={() => setActiveIndex(null)}
-            className="touch-pan-y select-none outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-md"
+            className="absolute top-0 left-0 touch-pan-y select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             {/* Faixa alvo */}
             <rect
@@ -245,12 +253,20 @@ export function GlucoseChart({ points, events, targetLow, targetHigh }: Props) {
             />
 
             {/* Eventos (insulina, refeição, exercício, nota) */}
-            {visibleEvents.map((e) => (
-              <g key={`${e.kind}-${e.id}`} transform={`translate(${x(e.t)}, ${LANE / 2})`}>
+            {markers.map(({ event: e, ex, mx }) => (
+              <g key={`${e.kind}-${e.id}`}>
                 <title>{`${formatTime(e.t)} — ${e.title}`}</title>
-                <line y1={8} y2={LANE / 2 + PLOT - 4} stroke="var(--border)" strokeWidth={1} />
-                <circle r={9} fill="var(--muted)" stroke="var(--surface)" strokeWidth={2} />
+                {/* Haste no horário real; o marcador pode ter sido afastado para não sobrepor */}
+                <polyline
+                  points={`${mx},${LANE / 2 + 9} ${ex},${LANE} ${ex},${LANE + PLOT}`}
+                  fill="none"
+                  stroke="var(--border)"
+                  strokeWidth={1}
+                />
+                <circle cx={mx} cy={LANE / 2} r={9} fill="var(--muted)" stroke="var(--surface)" strokeWidth={2} />
                 <text
+                  x={mx}
+                  y={LANE / 2}
                   dy="0.35em"
                   textAnchor="middle"
                   className="fill-surface text-[10px] font-semibold"

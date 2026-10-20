@@ -52,7 +52,7 @@ async function UserSettings() {
           </div>
           <div className="flex flex-wrap justify-between gap-2">
             <dt className="text-muted">Situação</dt>
-            <dd className={syncOk ? "text-glucose-in-range" : "text-glucose-low"}>
+            <dd className={syncOk ? "text-glucose-in-range-text" : "text-glucose-low-text"}>
               {settings.lastSyncStatus ? (syncOk ? "✓ funcionando" : `✕ ${settings.lastSyncStatus}`) : "—"}
             </dd>
           </div>

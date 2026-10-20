@@ -104,12 +104,8 @@ Todos os registros aparecem sobre o gráfico de glicemia, na linha do tempo.
 - [x] **2026-10-20 — Deploy:** produção em https://glicemia-mu.vercel.app (login testado no computador e no celular).
 - [x] **2026-10-20 — Sincronização com o LibreLinkUp:** `pg_cron` → `/api/sync` a cada 5 min, funcionando.
 - [x] Glicemia atual no painel (valor, seta de tendência, idade da leitura, aviso de falha de sincronização)
-- [ ] Gráfico das últimas horas no painel
-- [ ] Formulários de insulina, refeições, exercícios e notas
-- [ ] TIR, AGP e métricas
-- [ ] Relatório em PDF e exportação em CSV
-- [ ] Tela de configurações (faixa alvo)
-- [ ] Deploy no Vercel
+- [x] **2026-10-20 — Primeira versão completa:** gráfico com eventos, registros (insulina, refeições com base de alimentos TACO, exercícios, notas), análises (TIR, GMI, CV, AGP, resumo diário), relatório para PDF (impressão do navegador) e CSV, configurações da faixa alvo.
+- [ ] Opcional: ligar a Vercel ao GitHub para deploy automático a cada push (Settings → Git na Vercel).
 
 ## 10. Questões em aberto
 

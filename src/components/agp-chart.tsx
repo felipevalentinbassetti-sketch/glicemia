@@ -83,7 +83,7 @@ export function AgpChart({ buckets, targetLow, targetHigh, bucketMin = 30 }: Pro
             onPointerLeave={() => setActive(null)}
             onKeyDown={onKeyDown}
             onBlur={() => setActive(null)}
-            className="touch-pan-y select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="absolute top-0 left-0 touch-pan-y select-none rounded-md outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
             <rect
               x={LEFT}

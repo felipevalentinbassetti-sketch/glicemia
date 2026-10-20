@@ -11,12 +11,17 @@
   --muted: #5f6b7a;
   --accent: #2563eb;
   --chart-line: #2563eb;
-  /* Faixas de glicemia */
-  --glucose-very-low: #b91c1c;
-  --glucose-low: #ea580c;
-  --glucose-in-range: #16a34a;
-  --glucose-high: #ca8a04;
-  --glucose-very-high: #a16207;
+  /* Faixas de glicemia: preenchimentos (validados p/ daltonismo) e versões p/ texto (contraste ≥ 4.5:1) */
+  --glucose-very-low: #991b1b;
+  --glucose-low: #f87171;
+  --glucose-in-range: #15803d;
+  --glucose-high: #eab308;
+  --glucose-very-high: #c2410c;
+  --glucose-very-low-text: #991b1b;
+  --glucose-low-text: #dc2626;
+  --glucose-in-range-text: #15803d;
+  --glucose-high-text: #a16207;
+  --glucose-very-high-text: #c2410c;
 }
 
 .dark {
@@ -27,11 +32,16 @@
   --muted: #98a2b0;
   --accent: #60a5fa;
   --chart-line: #3b82f6;
-  --glucose-very-low: #f87171;
-  --glucose-low: #fb923c;
-  --glucose-in-range: #4ade80;
-  --glucose-high: #facc15;
-  --glucose-very-high: #eab308;
+  --glucose-very-low: #dc2626;
+  --glucose-low: #fca5a5;
+  --glucose-in-range: #16a34a;
+  --glucose-high: #fde047;
+  --glucose-very-high: #f97316;
+  --glucose-very-low-text: #f87171;
+  --glucose-low-text: #fca5a5;
+  --glucose-in-range-text: #4ade80;
+  --glucose-high-text: #fde047;
+  --glucose-very-high-text: #fb923c;
 }
 
 @theme inline {
@@ -47,6 +57,11 @@
   --color-glucose-in-range: var(--glucose-in-range);
   --color-glucose-high: var(--glucose-high);
   --color-glucose-very-high: var(--glucose-very-high);
+  --color-glucose-very-low-text: var(--glucose-very-low-text);
+  --color-glucose-low-text: var(--glucose-low-text);
+  --color-glucose-in-range-text: var(--glucose-in-range-text);
+  --color-glucose-high-text: var(--glucose-high-text);
+  --color-glucose-very-high-text: var(--glucose-very-high-text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -70,11 +85,16 @@ body {
     --border: #dfe3e8;
     --muted: #5f6b7a;
     --chart-line: #2563eb;
-    --glucose-very-low: #b91c1c;
-    --glucose-low: #ea580c;
-    --glucose-in-range: #16a34a;
-    --glucose-high: #ca8a04;
-    --glucose-very-high: #a16207;
+    --glucose-very-low: #991b1b;
+    --glucose-low: #f87171;
+    --glucose-in-range: #15803d;
+    --glucose-high: #eab308;
+    --glucose-very-high: #c2410c;
+    --glucose-very-low-text: #991b1b;
+    --glucose-low-text: #dc2626;
+    --glucose-in-range-text: #15803d;
+    --glucose-high-text: #a16207;
+    --glucose-very-high-text: #c2410c;
     color-scheme: light;
   }
   body {
