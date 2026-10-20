@@ -9,7 +9,7 @@ App web pessoal para acompanhamento de glicemia (FreeStyle Libre). As premissas 
 ### 1. Supabase
 
 1. Crie um projeto em [supabase.com](https://supabase.com).
-2. No **SQL Editor**, rode o conteúdo de [`supabase/migrations/20261020000000_init.sql`](supabase/migrations/20261020000000_init.sql).
+2. Abra o arquivo `supabase/migrations/20261020000000_init.sql`, copie **todo o conteúdo dele** (o código SQL, não o nome do arquivo), cole no **SQL Editor** do Supabase e clique em **Run**.
 3. Ainda no SQL Editor, autorize o seu e-mail:
    ```sql
    insert into public.allowed_emails (email) values ('voce@gmail.com');
